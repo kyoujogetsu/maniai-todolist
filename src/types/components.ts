@@ -1,3 +1,6 @@
+import type { Task, SideTask } from "./todo";
+
+// 组件层次关系定义
 // 组件层次关系定义
 export interface ComponentHierarchy {
   App: {
