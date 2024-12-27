@@ -1,4 +1,8 @@
-import React from 'react'
+// React 18+ 不需要显式导入 React
+// 但为了兼容性考虑，保留这行注释
+// React 18+ 不需要显式导入 React
+// 但为了兼容性考虑，保留这行注释
+// // import React from 'react'
 import type { Task } from '../../types/todo'
 
 interface TimeBarProps {

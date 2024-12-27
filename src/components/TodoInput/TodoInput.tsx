@@ -1,57 +1,64 @@
 import React, { useState } from 'react'
-import { NewTodo, LANGUAGES } from '../../types/todo'
+import { LANGUAGES, Language } from '../../types/todo'
+import styles from './TodoInput.module.css'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
 interface TodoInputProps {
-  onAdd: (todo: NewTodo) => void;
+  onAdd: (todo: any) => void
 }
 
 export default function TodoInput({ onAdd }: TodoInputProps) {
   const [text, setText] = useState('')
-  const [selectedLanguage, setSelectedLanguage] = useState(LANGUAGES[0].id)
+  const [date, setDate] = useState<Date | null>(null)
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>('ja')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!text.trim()) return
+    if (!text.trim() || !date) return
 
     onAdd({
-      text: text.trim(),
-      deadline: new Date(),
+      title: text.trim(),    // 这里改成 title
+      deadline: date,
       language: selectedLanguage
     })
-    
+
     setText('')
+    setDate(null)
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex gap-2 mb-4">
+    <form onSubmit={handleSubmit} className={styles.container}>
+      <div className={styles.languageSelector}>
         {LANGUAGES.map(lang => (
           <button
             key={lang.id}
             type="button"
+            className={`${styles.languageButton} ${selectedLanguage === lang.id ? styles.selected : ''}`}
             onClick={() => setSelectedLanguage(lang.id)}
-            className="px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200"
           >
             {lang.nativeName}
           </button>
         ))}
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <div className={styles.inputContainer}>
         <input
           type="text"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="添加新任务..."
-          className="w-full p-2 border rounded"
+          placeholder="タスクを入力..."
+          className={styles.input}
         />
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          添加
+        <DatePicker
+          selected={date}
+          onChange={(date: Date) => setDate(date)}
+          placeholderText="期限を選択..."
+          className={styles.datePicker}
+        />
+        <button type="submit" className={styles.button}>
+          追加
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   )
 }
