@@ -8,6 +8,7 @@ import { useState } from 'react'
 // 但为了兼容性考虑，保留这行注释
 // // import React, { useState } from 'react'
 import type { SideTask } from '../../types/todo'
+import styles from './Timeline.module.css';
 
 interface TimelineProps {
   sideTasks: SideTask[];
@@ -25,7 +26,7 @@ export function Timeline({
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
-    <div style={{ marginTop: '16px' }}>
+    <div className={styles.timelineContainer}>
       {/* 折叠按钮 */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -48,19 +49,7 @@ export function Timeline({
 
       {/* 折叠的内容 */}
       {!isCollapsed && (
-        <div style={{
-          position: 'relative',
-          paddingLeft: '20px',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            left: '6px',
-            top: '0',
-            bottom: '0',
-            width: '2px',
-            backgroundColor: '#e5e7eb'
-          }
-        }}>
+        <div className={styles.taskContainer}>
           {sideTasks.map((task) => (
             <div
               key={task.id}

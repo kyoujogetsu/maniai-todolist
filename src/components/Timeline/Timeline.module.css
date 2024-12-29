@@ -1,0 +1,19 @@
+.timelineContainer {
+  position: relative;
+  margin-top: 16px;
+}
+
+.timelineContainer::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #e5e7eb;
+}
+
+.taskContainer {
+  position: relative;
+  padding-left: 20px;
+}

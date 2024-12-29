@@ -12,6 +12,7 @@ import { TaskManager } from './components/TaskManager/TaskManager'
 import { TaskInput } from './components/TaskManager/TaskInput'
 import { TimeBar } from './components/TimeBar/TimeBar'
 import type { Task, ViewMode, SideTask } from './types/todo'
+import styles from './components/Timeline/Timeline.module.css'
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -88,7 +89,7 @@ function App() {
     }))
   }
 
-  // 切换视图�����式时的处理
+  // 切换视图式时的处理
   const handleModeChange = (newMode: ViewMode) => {
     setViewMode(newMode)
     if (newMode === 'sidetask') {
@@ -189,10 +190,10 @@ function App() {
               {/* 悬浮提示框 */}
               {showTooltip && viewMode === 'sidetask' && (
                 <div 
-                  onClick={() => setShowTooltip(false)}
+                  className={styles.taskPopup}
                   style={{
                     position: 'absolute',
-                    top: 'calc(100% + 8px)',
+                    top: '100%',
                     right: 0,
                     width: '280px',
                     backgroundColor: 'white',
@@ -203,17 +204,6 @@ function App() {
                     color: '#374151',
                     zIndex: 10,
                     cursor: 'pointer',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      top: '-8px',
-                      right: '24px',
-                      width: '0',
-                      height: '0',
-                      borderLeft: '8px solid transparent',
-                      borderRight: '8px solid transparent',
-                      borderBottom: '8px solid white'
-                    }
                   }}
                 >
                   準備タスクを設定することで、締切に向けて効率的にタスクを進められます。
