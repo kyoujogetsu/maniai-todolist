@@ -7,7 +7,7 @@ import { useState } from 'react'
 // React 18+ 不需要显式导入 React
 // 但为了兼容性考虑，保留这行注释
 // // import React, { useState } from 'react'
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable, DropResult, DragStart } from 'react-beautiful-dnd'
 import { TaskInput } from './TaskInput'
 import { PomodoroTimer } from '../PomodoroTimer/PomodoroTimer'
 import type { SideTask } from '../../types/todo'
@@ -35,7 +35,7 @@ export function TaskManager({
 }: TaskManagerProps) {
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null)
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     console.log('Drag ended:', result);
     if (!result.destination) return;
     
@@ -45,11 +45,9 @@ export function TaskManager({
     
     onReorderSideTasks(taskId, items);
   };
-
-  const handleDragStart = (result: any) => {
-    console.log('Drag started:', result);
+  const handleDragStart = (start: DragStart) => {
+    console.log('Drag started:', start);
   };
-
   return (
     <div>
       <h3 style={{ 
