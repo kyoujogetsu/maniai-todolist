@@ -10,14 +10,13 @@ import { useState, useEffect } from 'react'
 import type { SideTask } from '../../types/todo'
 
 interface PomodoroTimerProps {
-  taskId: number;      // 用于回调时识别主任务
-  sideTask: SideTask; // 用于显示和控制番茄钟
-  onComplete: (taskId: number, sideTaskId: number) => void;
-  onProgressUpdate: (taskId: number, sideTaskId: number, progress: number) => void;
+  taskId: number;      // 主任务ID
+  sideTask: SideTask; // 子任务信息
+  onComplete: (taskId: number, sideTaskId: number) => void;  // 完成时的回调
+  onProgressUpdate: (taskId: number, sideTaskId: number, progress: number) => void;  // 进度更新的回调
 }
 
 export function PomodoroTimer({ 
-  // taskId 仅用于回调，由 TaskManager 使用
   taskId, 
   sideTask, 
   onComplete,
@@ -52,7 +51,7 @@ export function PomodoroTimer({
       }
     }
     return () => clearInterval(timer)
-  }, [isRunning, timeLeft, currentPomodoro, sideTask.pomodoroCount, onComplete, onProgressUpdate])
+  }, [isRunning, timeLeft, currentPomodoro, sideTask.pomodoroCount, onComplete, onProgressUpdate, taskId])
 
   const toggleTimer = () => {
     setIsRunning(prev => !prev)

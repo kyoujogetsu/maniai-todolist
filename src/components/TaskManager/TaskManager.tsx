@@ -62,14 +62,14 @@ export function TaskManager({
         <PomodoroTimer
           taskId={taskId}
           sideTask={sideTasks.find(t => t.id === activeTaskId)!}
-          onComplete={() => {
-            onCompleteSideTask(taskId, activeTaskId);
+          onComplete={(taskId, sideTaskId) => {
+            onCompleteSideTask(taskId, sideTaskId);
             setActiveTaskId(null);
             onActiveTaskComplete?.();
           }}
-          onProgressUpdate={(progress) => 
-            onActiveTaskUpdate?.(taskId, activeTaskId, progress)
-          }
+          onProgressUpdate={(taskId, sideTaskId, progress) => {
+            onActiveTaskUpdate?.(taskId, sideTaskId, progress);
+          }}
         />
       )}
 
