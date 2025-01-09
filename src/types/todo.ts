@@ -37,7 +37,7 @@ export interface Task {
   id: number;
   title: string;
   deadline: Date;           // 截止时间 / 締切時間 / Deadline
-  remainingTime: number;    // 剩余时间（分） / 残り時間（分） / Remaining time (min)
+  remainingTime: number;    // 剩余时间（分钟） / 残り時間（分） / Remaining time (min)
   sideTasks: SideTask[];    // 子任务列表 / サブタスク一覧 / Subtask list
 }
 

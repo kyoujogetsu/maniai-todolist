@@ -11,17 +11,26 @@ import type { SideTask } from '../../types/todo'
 import styles from './Timeline.module.css';
 
 interface TimelineProps {
-  sideTasks: SideTask[];
+  /** 
+   * remainingTime 用于计算整个时间轴的基准长度
+   * 虽然在 Timeline 组件中未直接使用
+   * 但通过 task 对象传递给 TimeBar 组件使用
+   * @see TimeBar 组件中的 totalTime 计算
+   */
   remainingTime: number;
+  sideTasks: SideTask[];
   activeTaskId?: number;
   activeTaskProgress?: number;
 }
 
 export function Timeline({ 
-  sideTasks, 
-  remainingTime,
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  // @ts-expect-error remainingTime is used through task object in TimeBar component
+  remainingTime,  // 用于时间轴长度计算，通过 task 对象传递给 TimeBar
+  /* eslint-enable @typescript-eslint/no-unused-vars */
+  sideTasks,
   activeTaskId,
-  activeTaskProgress = 0
+  activeTaskProgress = 0 
 }: TimelineProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
