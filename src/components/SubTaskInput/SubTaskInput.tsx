@@ -26,7 +26,8 @@ export function SubTaskInput({ onAdd, remainingTime }: SubTaskInputProps) {
       status: "pending",
       completed: false,
       pomodoroCount: 0,
-      taskId: someTaskId
+      taskId: someTaskId,
+      completedPomodoros: 0
     })
     setTitle('')
     setEstimatedTime(30)
