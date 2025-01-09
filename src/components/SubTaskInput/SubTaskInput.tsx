@@ -20,7 +20,14 @@ export function SubTaskInput({ onAdd, remainingTime }: SubTaskInputProps) {
       status: 'pending' as const,
     }
 
-    onAdd(newSubTask)
+    onAdd({
+      title: newSubTask.title,
+      estimatedTime: newSubTask.estimatedTime,
+      status: "pending",
+      completed: false,
+      pomodoroCount: 0,
+      taskId: someTaskId
+    })
     setTitle('')
     setEstimatedTime(30)
   }

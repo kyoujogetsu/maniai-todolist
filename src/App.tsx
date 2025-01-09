@@ -39,9 +39,10 @@ function App() {
   }, [])
 
   // 添加主任务
-  const handleAddTask = (title: string, deadline: Date) => {
-    const now = new Date()
-    const remainingTime = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / (1000 * 60)))
+  const handleAddTask = (title: string, deadline?: Date) => {
+    if (!deadline) return; // 确保 deadline 存在
+    const now = new Date();
+    const remainingTime = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / (1000 * 60)));
     
     const task: Task = {
       id: Date.now(),

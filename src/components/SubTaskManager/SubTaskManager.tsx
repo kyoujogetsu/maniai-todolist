@@ -23,9 +23,11 @@ export function SubTaskManager({
 
     onAddSubTask(taskId, {
       title: title.trim(),
-      pomodoroCount,
+      pomodoroCount: pomodoroCount,
       completedPomodoros: 0,
-      status: 'pending'
+      status: 'pending',
+      completed: false,
+      taskId: taskId
     })
 
     setTitle('')
