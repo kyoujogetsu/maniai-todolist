@@ -36,7 +36,6 @@ export function TaskManager({
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null)
 
   const handleDragEnd = (result: DropResult) => {
-    console.log('Drag ended:', result);
     if (!result.destination) return;
     
     const items = Array.from(sideTasks);
@@ -46,7 +45,6 @@ export function TaskManager({
     onReorderSideTasks(taskId, items);
   };
   const handleDragStart = (start: DragStart) => {
-    console.log('Drag started:', start);
   };
   return (
     <div>

@@ -1,0 +1,33 @@
+2025-01-09 22:44:50.216 JST [46457] LOG:  starting PostgreSQL 17.2 on x86_64-apple-darwin24.1.0, compiled by clang version 19.1.5, 64-bit
+2025-01-09 22:44:50.218 JST [46457] LOG:  listening on IPv6 address "::1", port 5432
+2025-01-09 22:44:50.218 JST [46457] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-09 22:44:50.219 JST [46457] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-09 22:44:50.223 JST [46460] LOG:  database system was shut down at 2025-01-09 22:44:07 JST
+2025-01-09 22:44:50.227 JST [46457] LOG:  database system is ready to accept connections
+2025-01-09 22:46:27.831 JST [46457] LOG:  received fast shutdown request
+2025-01-09 22:46:27.832 JST [46457] LOG:  aborting any active transactions
+2025-01-09 22:46:27.834 JST [46457] LOG:  background worker "logical replication launcher" (PID 46463) exited with exit code 1
+2025-01-09 22:46:27.834 JST [46458] LOG:  shutting down
+2025-01-09 22:46:27.834 JST [46458] LOG:  checkpoint starting: shutdown immediate
+2025-01-09 22:46:27.837 JST [46458] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1507CE0, redo lsn=0/1507CE0
+2025-01-09 22:46:27.841 JST [46457] LOG:  database system is shut down
+2025-01-09 22:46:46.688 JST [46651] LOG:  starting PostgreSQL 17.2 on x86_64-apple-darwin24.1.0, compiled by clang version 19.1.5, 64-bit
+2025-01-09 22:46:46.690 JST [46651] LOG:  listening on IPv6 address "::1", port 5432
+2025-01-09 22:46:46.690 JST [46651] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-09 22:46:46.691 JST [46651] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-09 22:46:46.695 JST [46654] LOG:  database system was shut down at 2025-01-09 22:46:27 JST
+2025-01-09 22:46:46.699 JST [46651] LOG:  database system is ready to accept connections
+2025-01-09 22:47:56.845 JST [46651] LOG:  received fast shutdown request
+2025-01-09 22:47:56.845 JST [46651] LOG:  aborting any active transactions
+2025-01-09 22:47:56.847 JST [46651] LOG:  background worker "logical replication launcher" (PID 46657) exited with exit code 1
+2025-01-09 22:47:56.847 JST [46652] LOG:  shutting down
+2025-01-09 22:47:56.848 JST [46652] LOG:  checkpoint starting: shutdown immediate
+2025-01-09 22:47:56.850 JST [46652] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1507D90, redo lsn=0/1507D90
+2025-01-09 22:47:56.854 JST [46651] LOG:  database system is shut down
+2025-01-09 22:48:30.718 JST [46830] LOG:  starting PostgreSQL 17.2 on x86_64-apple-darwin24.1.0, compiled by clang version 19.1.5, 64-bit
+2025-01-09 22:48:30.719 JST [46830] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2025-01-09 22:48:30.720 JST [46830] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2025-01-09 22:48:30.724 JST [46833] LOG:  database system was shut down at 2025-01-09 22:48:10 JST
+2025-01-09 22:48:30.728 JST [46830] LOG:  database system is ready to accept connections
+2025-01-09 22:53:30.725 JST [46831] LOG:  checkpoint starting: time
+2025-01-09 22:55:08.891 JST [46831] LOG:  checkpoint complete: wrote 978 buffers (6.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=98.156 s, sync=0.010 s, total=98.167 s; sync files=310, longest=0.001 s, average=0.001 s; distance=4588 kB, estimate=4588 kB; lsn=0/1982F80, redo lsn=0/1982EF0

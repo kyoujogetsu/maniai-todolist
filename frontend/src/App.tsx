@@ -53,7 +53,6 @@ function App() {
   // 添加初始加载
   useEffect(() => {
     const records = getCompletionRecords();
-    console.log('Initial records:', records);
     setCompletionRecords(records);
   }, []);
 
@@ -136,12 +135,10 @@ function App() {
 
   // 在 App 组件中添加处理函数
   const handleReorderSideTasks = (taskId: number, newSideTasks: SideTask[]) => {
-    console.log('Reordering tasks:', { taskId, newSideTasks });  // 添加日志
     setTasks(prevTasks => {
       const newTasks = prevTasks.map(task => 
         task.id === taskId ? { ...task, sideTasks: newSideTasks } : task
       );
-      console.log('New tasks state:', newTasks);  // 添加日志
       return newTasks;
     });
   };
@@ -155,7 +152,6 @@ function App() {
   };
 
   const handleTaskCompletion = (taskId: Task['id'], completionStatus: TaskCompletionStatus) => {
-    console.log('Completing task:', { taskId, completionStatus });  // 添加日志
     
     const newRecord: CompletionRecord = {
       taskId,
@@ -188,7 +184,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log('taskToFinish changed:', taskToFinish);
   }, [taskToFinish]);
 
   return (
