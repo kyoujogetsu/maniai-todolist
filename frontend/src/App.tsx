@@ -12,6 +12,7 @@ import { TaskManager } from './components/TaskManager/TaskManager'
 import { TaskInput } from './components/TaskManager/TaskInput'
 import { TimeBar } from './components/TimeBar/TimeBar'
 import type { Task, ViewMode, SideTask } from './types/todo'
+import { TaskCompletionStatus } from './types/todo'
 import styles from './components/Timeline/Timeline.module.css'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
     progress: number;
   } | null>(null)
   const [showTooltip, setShowTooltip] = useState(false)
+  const [taskToFinish, setTaskToFinish] = useState<Task['id'] | null>(null)
 
   // 更新剩余时间
   useEffect(() => {
@@ -133,6 +135,23 @@ function App() {
         ? { ...task, sideTasks: task.sideTasks.filter(st => st.id !== sideTaskId) }
         : task
     ));
+  };
+
+  const handleTaskCompletion = (taskId: Task['id'], status: TaskCompletionStatus) => {
+    setTasks(prevTasks => prevTasks.map(task => 
+      task.id === taskId 
+        ? {
+            ...task,
+            completionStatus: status
+          }
+        : task
+    ));
+    setTaskToFinish(null);
+  };
+
+  const handleTaskAbandon = (taskId: Task['id']) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+    setTaskToFinish(null);
   };
 
   return (
@@ -309,6 +328,62 @@ function App() {
                     <span>完了: {task.sideTasks.filter(st => st.completed).length}個</span>
                   </div>
                 )}
+
+                {/* 修改按钮层级结构 */}
+                <div className="mt-4 flex justify-end gap-4">
+                  {taskToFinish === task.id ? (
+                    <div className="grid grid-cols-3 gap-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskCompletion(task.id, TaskCompletionStatus.NOT_IN_TIME);
+                        }}
+                        className="px-4 py-2 text-red-400 hover:text-red-500 transition-colors"
+                      >
+                        間に合わない
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskCompletion(task.id, TaskCompletionStatus.JUST_IN_TIME);
+                        }}
+                        className="px-4 py-2 text-yellow-400 hover:text-yellow-500 transition-colors mx-2"
+                      >
+                        ギリギリ
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskCompletion(task.id, TaskCompletionStatus.WITH_SPARE);
+                        }}
+                        className="px-4 py-2 text-green-400 hover:text-green-500 transition-colors mx-2"
+                      >
+                        余裕がある
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setTaskToFinish(task.id);
+                        }}
+                        className="px-4 py-2 text-blue-400 hover:text-blue-500 transition-colors"
+                      >
+                        完了
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskAbandon(task.id);
+                        }}
+                        className="px-4 py-2 text-blue-400 hover:text-blue-500 transition-colors"
+                      >
+                        放棄
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             ))}
 

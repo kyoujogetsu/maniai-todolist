@@ -39,6 +39,8 @@ export interface Task {
   deadline: Date;           // 截止时间 / 締切時間 / Deadline
   remainingTime: number;    // 剩余时间（分钟） / 残り時間（分） / Remaining time (min)
   sideTasks: SideTask[];    // 子任务列表 / サブタスク一覧 / Subtask list
+  result?: TaskResult;
+  completionStatus?: TaskCompletionStatus;
 }
 
 // 新建任务
@@ -52,3 +54,15 @@ export interface NewTodo {
 
 // 视图模式
 export type ViewMode = 'maniai' | 'sidetask';
+
+export enum TaskCompletionStatus {
+  NOT_IN_TIME = '間に合わない',
+  JUST_IN_TIME = 'ギリギリ',
+  WITH_SPARE = '余裕がある'
+}
+
+export interface TaskResult {
+  taskId: number;
+  completionStatus: TaskCompletionStatus;
+  completedAt: Date;
+}
