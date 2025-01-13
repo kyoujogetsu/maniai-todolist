@@ -11,9 +11,18 @@ import { Timeline } from './components/Timeline/Timeline'
 import { TaskManager } from './components/TaskManager/TaskManager'
 import { TaskInput } from './components/TaskManager/TaskInput'
 import { TimeBar } from './components/TimeBar/TimeBar'
-import type { Task, ViewMode, SideTask } from './types/todo'
+import type { Task, ViewMode, SideTask, CompletionRecord } from './types/todo'
 import { TaskCompletionStatus } from './types/todo'
 import styles from './components/Timeline/Timeline.module.css'
+import { saveCompletionRecord } from './utils/storage'
+import { getCompletionRecords } from './utils/storage'
+
+// 定义颜色映射
+const STATUS_COLORS = {
+  [TaskCompletionStatus.NOT_IN_TIME]: 'text-red-400 hover:text-red-500',
+  [TaskCompletionStatus.JUST_IN_TIME]: 'text-yellow-400 hover:text-yellow-500',
+  [TaskCompletionStatus.WITH_SPARE]: 'text-green-400 hover:text-green-500'
+} as const;
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -26,6 +35,7 @@ function App() {
   } | null>(null)
   const [showTooltip, setShowTooltip] = useState(false)
   const [taskToFinish, setTaskToFinish] = useState<Task['id'] | null>(null)
+  const [completionRecords, setCompletionRecords] = useState<CompletionRecord[]>([])
 
   // 更新剩余时间
   useEffect(() => {
@@ -39,6 +49,13 @@ function App() {
 
     return () => clearInterval(timer)
   }, [])
+
+  // 添加初始加载
+  useEffect(() => {
+    const records = getCompletionRecords();
+    console.log('Initial records:', records);
+    setCompletionRecords(records);
+  }, []);
 
   // 添加主任务
   const handleAddTask = (title: string, deadline?: Date) => {
@@ -137,13 +154,20 @@ function App() {
     ));
   };
 
-  const handleTaskCompletion = (taskId: Task['id'], status: TaskCompletionStatus) => {
+  const handleTaskCompletion = (taskId: Task['id'], completionStatus: TaskCompletionStatus) => {
+    console.log('Completing task:', { taskId, completionStatus });  // 添加日志
+    
+    const newRecord: CompletionRecord = {
+      taskId,
+      completionStatus,
+      completedAt: new Date()
+    };
+    
+    saveCompletionRecord(newRecord);
+    setCompletionRecords(prev => [...prev, newRecord]);
     setTasks(prevTasks => prevTasks.map(task => 
       task.id === taskId 
-        ? {
-            ...task,
-            completionStatus: status
-          }
+        ? { ...task, completionStatus }
         : task
     ));
     setTaskToFinish(null);
@@ -153,6 +177,19 @@ function App() {
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
     setTaskToFinish(null);
   };
+
+  // 添加完成处理函数
+  const handleTaskComplete = (taskId: Task['id']) => {
+    setTasks(prevTasks => prevTasks.map(task => 
+      task.id === taskId 
+        ? { ...task, completed: true }
+        : task
+    ));
+  };
+
+  useEffect(() => {
+    console.log('taskToFinish changed:', taskToFinish);
+  }, [taskToFinish]);
 
   return (
     <div style={{ 
@@ -278,7 +315,9 @@ function App() {
             {tasks.map(task => (
               <div
                 key={task.id}
-                onClick={() => setSelectedTaskId(task.id)}
+                onClick={() => {
+                  setSelectedTaskId(task.id);
+                }}
                 style={{
                   backgroundColor: 'white',
                   padding: '20px',
@@ -331,14 +370,56 @@ function App() {
 
                 {/* 修改按钮层级结构 */}
                 <div className="mt-4 flex justify-end gap-4">
-                  {taskToFinish === task.id ? (
-                    <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTaskToFinish(task.id);
+                      }}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#dbeafe',
+                        color: '#5D90F0',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        border: 'none'
+                      }}
+                    >
+                      完了
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTaskAbandon(task.id);
+                      }}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: '#f3f4f6',  // 浅灰色背景
+                        color: '#6b7280',           // 灰色文字
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        border: 'none'
+                      }}
+                    >
+                      放棄
+                    </button>
+                  </div>
+                  
+                  {taskToFinish === task.id && (
+                    <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleTaskCompletion(task.id, TaskCompletionStatus.NOT_IN_TIME);
                         }}
-                        className="px-4 py-2 text-red-400 hover:text-red-500 transition-colors"
+                        style={{
+                          padding: '8px 16px',
+                          backgroundColor: '#fee2e2',  // 红色背景
+                          color: '#dc2626',           // 红色文字
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
                       >
                         間に合わない
                       </button>
@@ -347,7 +428,14 @@ function App() {
                           e.stopPropagation();
                           handleTaskCompletion(task.id, TaskCompletionStatus.JUST_IN_TIME);
                         }}
-                        className="px-4 py-2 text-yellow-400 hover:text-yellow-500 transition-colors mx-2"
+                        style={{
+                          padding: '8px 16px',
+                          backgroundColor: '#fef9c3',  // 黄色背景
+                          color: '#ca8a04',           // 黄色文字
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
                       >
                         ギリギリ
                       </button>
@@ -356,32 +444,18 @@ function App() {
                           e.stopPropagation();
                           handleTaskCompletion(task.id, TaskCompletionStatus.WITH_SPARE);
                         }}
-                        className="px-4 py-2 text-green-400 hover:text-green-500 transition-colors mx-2"
+                        style={{
+                          padding: '8px 16px',
+                          backgroundColor: '#dcfce7',  // 绿色背景
+                          color: '#16a34a',           // 绿色文字
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          border: 'none'
+                        }}
                       >
                         余裕がある
                       </button>
                     </div>
-                  ) : (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setTaskToFinish(task.id);
-                        }}
-                        className="px-4 py-2 text-blue-400 hover:text-blue-500 transition-colors"
-                      >
-                        完了
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTaskAbandon(task.id);
-                        }}
-                        className="px-4 py-2 text-blue-400 hover:text-blue-500 transition-colors"
-                      >
-                        放棄
-                      </button>
-                    </>
                   )}
                 </div>
               </div>

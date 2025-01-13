@@ -66,3 +66,9 @@ export interface TaskResult {
   completionStatus: TaskCompletionStatus;
   completedAt: Date;
 }
+
+export interface CompletionRecord {
+  taskId: number;
+  completionStatus: TaskCompletionStatus;
+  completedAt: Date;
+}
