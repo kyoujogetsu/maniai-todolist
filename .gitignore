@@ -7,3 +7,5 @@ dist-ssr
 *.bak
 *.bak2
 src/App.tsx.backup*
+.postgres/
+logfile
