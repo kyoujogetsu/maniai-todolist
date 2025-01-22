@@ -14,27 +14,8 @@ import { TimeBar } from './components/TimeBar/TimeBar'
 import type { Task, ViewMode, SideTask, CompletionRecord } from './types/todo'
 import { TaskCompletionStatus } from './types/todo'
 import styles from './components/Timeline/Timeline.module.css'
-import { saveCompletionRecord } from './utils/storage'
-import { getCompletionRecords } from './utils/storage'
+import { saveCompletionRecord, getCompletionRecords } from './utils/storage'
 import { CompletionChart } from './components/CompletionChart/CompletionChart'
-
-// 定义颜色映射
-const STATUS_COLORS = {
-  [TaskCompletionStatus.NOT_IN_TIME]: 'text-red-400 hover:text-red-500',
-  [TaskCompletionStatus.JUST_IN_TIME]: 'text-yellow-400 hover:text-yellow-500',
-  [TaskCompletionStatus.WITH_SPARE]: 'text-green-400 hover:text-green-500'
-} as const;
-
-// 1. 添加任务状态类型
-type TaskStatus = 'active' | 'completed';
-
-// 2. 修改 Task 接口，添加新属性
-interface Task {
-  // ... 现有属性 ...
-  status: TaskStatus;
-  completedAt?: Date;
-  completionStatus?: TaskCompletionStatus;
-}
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -49,6 +30,7 @@ function App() {
   const [taskToFinish, setTaskToFinish] = useState<Task['id'] | null>(null)
   const [completionRecords, setCompletionRecords] = useState<CompletionRecord[]>([])
   const [showStats, setShowStats] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<TaskCompletionStatus | null>(null)
 
   // 更新剩余时间
   useEffect(() => {
@@ -165,15 +147,12 @@ function App() {
     ));
   };
 
-  const updateTaskStatus = async (taskId: string, completed: boolean) => {
-    // 这里实现更新任务状态的逻辑
-    // 可以是 API 调用或本地状态更新
-    return true;  // 暂时返回 true
-  };
-
-  // 3. 修改处理任务完成的函数
+  // 2. 修改 handleTaskCompletion 函数
   const handleTaskCompletion = async (taskId: Task['id'], completionStatus: TaskCompletionStatus) => {
     try {
+      console.log('开始保存记录:', { taskId, completionStatus });
+      
+      // 1. 更新任务状态
       setTasks(prev => prev.map(task => 
         task.id === taskId 
           ? {
@@ -185,30 +164,30 @@ function App() {
           : task
       ));
       
+      // 2. 创建新记录
       const newRecord: CompletionRecord = {
         taskId,
         completionStatus,
         completedAt: new Date()
       };
+      console.log('准备保存记录:', newRecord);
+      
+      // 3. 保存到 localStorage
+      saveCompletionRecord(newRecord);
+      console.log('记录已保存到 localStorage');
+      
+      // 4. 更新状态
       setCompletionRecords(prev => [...prev, newRecord]);
+      setTaskToFinish(null);  // 清除状态，隐藏按钮
       setShowStats(true);
     } catch (error) {
-      console.error('完成任务时出错:', error);
+      console.error('保存记录时出错:', error);
     }
   };
 
   const handleTaskAbandon = (taskId: Task['id']) => {
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
     setTaskToFinish(null);
-  };
-
-  // 添加完成处理函数
-  const handleTaskComplete = (taskId: Task['id']) => {
-    setTasks(prevTasks => prevTasks.map(task => 
-      task.id === taskId 
-        ? { ...task, completed: true }
-        : task
-    ));
   };
 
   // 4. 添加归档函数
@@ -218,7 +197,18 @@ function App() {
   };
 
   useEffect(() => {
+    if (taskToFinish) {
+      // 仅在需要时执行相关逻辑
+    }
   }, [taskToFinish]);
+
+  // 1. 检查初始状态
+  console.log('初始状态:', {
+    tasks,
+    showStats,
+    completionRecords,
+    selectedStatus
+  });
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', padding: '20px' }}>
@@ -397,6 +387,7 @@ function App() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          console.log('点击完成按钮');
                           setTaskToFinish(task.id);
                         }}
                         style={{
@@ -428,58 +419,63 @@ function App() {
                       </button>
                     </div>
                     
-                    {taskToFinish === task.id && (
-                      <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleTaskCompletion(task.id, TaskCompletionStatus.NOT_IN_TIME);
-                          }}
-                          style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#fee2e2',  // 红色背景
-                            color: '#dc2626',           // 红色文字
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            border: 'none'
-                          }}
-                        >
-                          間に合わない
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleTaskCompletion(task.id, TaskCompletionStatus.JUST_IN_TIME);
-                          }}
-                          style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#fef9c3',  // 黄色背景
-                            color: '#ca8a04',           // 黄色文字
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            border: 'none'
-                          }}
-                        >
-                          ギリギリ
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleTaskCompletion(task.id, TaskCompletionStatus.WITH_SPARE);
-                          }}
-                          style={{
-                            padding: '8px 16px',
-                            backgroundColor: '#dcfce7',  // 绿色背景
-                            color: '#16a34a',           // 绿色文字
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            border: 'none'
-                          }}
-                        >
-                          余裕がある
-                        </button>
-                      </div>
-                    )}
+                    {(() => {
+                      if (taskToFinish === task.id) {
+                        return (
+                          <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTaskCompletion(task.id, TaskCompletionStatus.NOT_IN_TIME);
+                              }}
+                              style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#fee2e2',
+                                color: '#dc2626',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                border: 'none'
+                              }}
+                            >
+                              間に合わない
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTaskCompletion(task.id, TaskCompletionStatus.JUST_IN_TIME);
+                              }}
+                              style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#fef9c3',
+                                color: '#ca8a04',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                border: 'none'
+                              }}
+                            >
+                              ギリギリ
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTaskCompletion(task.id, TaskCompletionStatus.WITH_SPARE);
+                              }}
+                              style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#dcfce7',
+                                color: '#16a34a',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                border: 'none'
+                              }}
+                            >
+                              余裕がある
+                            </button>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
                   </div>
                 </div>
               ))}
@@ -529,9 +525,9 @@ function App() {
         {showStats && (
           <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
             <h2 className="text-xl font-bold">完了タスクの統計</h2>
-            <CompletionChart completionRecords={completionRecords} />
-            
-            {/* 只保留这一个按钮 */}
+            <CompletionChart 
+              completionRecords={completionRecords} 
+            />
             <div className="flex justify-center mt-4">
               <button 
                 onClick={handleArchive}

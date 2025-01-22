@@ -41,6 +41,8 @@ export interface Task {
   sideTasks: SideTask[];    // 子任务列表 / サブタスク一覧 / Subtask list
   result?: TaskResult;
   completionStatus?: TaskCompletionStatus;
+  status: 'active' | 'completed';  // 添加：任务状态
+  completedAt?: Date;             // 添加：完成时间
 }
 
 // 新建任务
