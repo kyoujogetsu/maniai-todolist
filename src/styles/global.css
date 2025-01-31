@@ -1,0 +1,68 @@
+/* 基础样式 */
+.task-container {
+  display: flex;
+  width: 100%;
+}
+
+.task-list {
+  width: 100%;
+}
+
+.task-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+}
+
+.task-manager {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 移动端样式 - 更严格的控制 */
+@media screen and (max-width: 768px) {
+  .task-container {
+    display: block !important; /* 强制块级显示 */
+  }
+
+  .task-list {
+    display: block;
+    width: 100% !important;
+  }
+
+  .task-card {
+    width: 100% !important;
+    margin: 0 0 12px 0 !important;
+  }
+
+  .task-manager {
+    width: 100% !important;
+    margin-top: 20px !important;
+    position: relative !important;
+  }
+
+  .tooltip {
+    position: relative !important;
+    width: 100% !important;
+    margin: 8px 0 !important;
+    word-wrap: break-word;
+    white-space: normal;
+  }
+}
+
+/* 桌面端样式 */
+@media screen and (min-width: 769px) {
+  .task-container {
+    flex-direction: row;
+    gap: 20px;
+  }
+
+  .task-manager {
+    width: 400px;
+    flex-shrink: 0;
+  }
+} 

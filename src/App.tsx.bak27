@@ -1,0 +1,65 @@
+import React, { useEffect } from 'react';
+
+const App = () => {
+  // ... 其他代码 ...
+
+  // 添加调试日志
+  useEffect(() => {
+    console.log('ViewMode changed:', viewMode);
+  }, [viewMode]);
+
+  console.log('Rendering App with viewMode:', viewMode);
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-2 md:p-5">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl mb-4 text-red-500">布局测试</h1>  {/* 改变这行 */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}>
+          {/* 主任务列表 */}
+          <div style={{ width: '100%' }}>
+            {tasks.map(task => (
+              <div style={{
+                backgroundColor: 'white',
+                padding: window.innerWidth < 768 ? '12px' : '20px',  // 移动端减小padding
+                borderRadius: '8px',
+                marginBottom: '12px',  // 也稍微减小间距
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                cursor: 'pointer',
+                border: selectedTaskId === task.id ? '2px solid #3b82f6' : '2px solid transparent'
+              }}>
+              </div>
+            ))}
+          </div>
+
+          {/* 子任务管理面板 */}
+          {viewMode === 'sidetask' && selectedTaskId && (
+            <div style={{
+              width: '100%',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+            }}>
+              <TaskManager
+                taskId={selectedTaskId}
+                sideTasks={tasks.find(t => t.id === selectedTaskId)?.sideTasks || []}
+                onAddSideTask={handleAddSideTask}
+                onCompleteSideTask={handleCompleteSideTask}
+                onReorderSideTasks={handleReorderSideTasks}
+                onDeleteSideTask={handleDeleteSideTask}
+                onActiveTaskUpdate={handleActiveTaskUpdate}
+                onActiveTaskComplete={handleActiveTaskComplete}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App; 

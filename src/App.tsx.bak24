@@ -1,0 +1,55 @@
+import React, { useEffect } from 'react';
+
+const App = () => {
+  // ... 其他代码 ...
+
+  // 添加useEffect来监控viewMode
+  useEffect(() => {
+    console.log('ViewMode changed:', viewMode);
+  }, [viewMode]);
+
+  console.log('Rendering App with viewMode:', viewMode);
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-2 md:p-5">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl mb-4">测试更新</h1>  {/* 添加测试文本 */}
+        <div className="grid grid-cols-1 gap-4">  {/* 强制单列布局 */}
+          {/* 主任务列表 */}
+          <div className="w-full">
+            {tasks.map(task => (
+              <div style={{
+                backgroundColor: 'white',
+                padding: window.innerWidth < 768 ? '12px' : '20px',  // 移动端减小padding
+                borderRadius: '8px',
+                marginBottom: '12px',  // 也稍微减小间距
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                cursor: 'pointer',
+                border: selectedTaskId === task.id ? '2px solid #3b82f6' : '2px solid transparent'
+              }}>
+              </div>
+            ))}
+          </div>
+
+          {/* 子任务管理面板 */}
+          {viewMode === 'sidetask' && selectedTaskId && (
+            <div className="w-full bg-white rounded-lg p-4 shadow-sm">
+              <TaskManager
+                taskId={selectedTaskId}
+                sideTasks={tasks.find(t => t.id === selectedTaskId)?.sideTasks || []}
+                onAddSideTask={handleAddSideTask}
+                onCompleteSideTask={handleCompleteSideTask}
+                onReorderSideTasks={handleReorderSideTasks}
+                onDeleteSideTask={handleDeleteSideTask}
+                onActiveTaskUpdate={handleActiveTaskUpdate}
+                onActiveTaskComplete={handleActiveTaskComplete}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App; 
